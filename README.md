@@ -44,4 +44,3 @@ Daemon.initialize(
   @Nullable Integer wakeUpInterval);  //定时唤醒的时间间隔(ms), 默认 6 分钟.
 
 Context.startService(new Intent(Context app, Class<? extends AbsWorkService> serviceClass));
-```
