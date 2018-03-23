@@ -46,7 +46,7 @@ void onServiceKilled();
 
 在 Application 的 `onCreate()` 中, 调用
 
-```
+
 ```
 Daemon.initialize(
   Context app,  //Application Context.
