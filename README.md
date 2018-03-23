@@ -42,6 +42,7 @@ void stopWork();
 //服务被杀时调用, 可以在这里面保存数据.
 void onServiceKilled();
 
+```
 ### 3. 自定义 Application
 
 在 Application 的 `onCreate()` 中, 调用
