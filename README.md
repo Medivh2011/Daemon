@@ -12,7 +12,7 @@ project build.gradle 中添加
 			maven { url 'https://jitpack.io' }
 		}
 	}
-	app build.gradle 中添加
+app build.gradle 中添加
 		dependencies {
     	        compile 'com.github.Medivh2011:Daemon:1.0'
     	}
