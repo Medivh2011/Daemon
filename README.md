@@ -45,4 +45,3 @@ Daemon.initialize(
 
 Context.startService(new Intent(Context app, Class<? extends AbsWorkService> serviceClass));
 ```
-
