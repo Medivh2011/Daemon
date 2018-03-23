@@ -24,14 +24,14 @@ public abstract class AbsWorkService extends Service {
      * 是否 任务完成, 不再需要服务运行?
      * @return 应当停止服务, true; 应当启动服务, false; 无法判断, 什么也不做, null.
      */
-    public abstract Boolean shouldStopService(Intent intent, int flags, int startId);
+    public abstract boolean isShouldStopService(Intent intent, int flags, int startId);
     public abstract void startWork(Intent intent, int flags, int startId);
     public abstract void stopWork(Intent intent, int flags, int startId);
     /**
      * 任务是否正在运行?
      * @return 任务正在运行, true; 任务当前不在运行, false; 无法判断, 什么也不做, null.
      */
-    public abstract Boolean isWorkRunning(Intent intent, int flags, int startId);
+    public abstract boolean isTaskRunning(Intent intent, int flags, int startId);
     @Nullable public abstract IBinder onBind(Intent intent, Void alwaysNull);
     public abstract void onServiceKilled(Intent rootIntent);
 
@@ -48,7 +48,7 @@ public abstract class AbsWorkService extends Service {
         Daemon.startServiceMayBind(WatchDogService.class);
 
         //业务逻辑: 实际使用时，根据需求，将这里更改为自定义的条件，判定服务应当启动还是停止 (任务是否需要运行)
-        Boolean shouldStopService = shouldStopService(intent, flags, startId);
+        Boolean shouldStopService = isShouldStopService(intent, flags, startId);
         if (shouldStopService != null) {
             if (shouldStopService) stopService(intent, flags, startId); else startService(intent, flags, startId);
         }
@@ -72,11 +72,11 @@ public abstract class AbsWorkService extends Service {
 
     void startService(Intent intent, int flags, int startId) {
         //检查服务是否不需要运行
-        Boolean shouldStopService = shouldStopService(intent, flags, startId);
-        if (shouldStopService != null && shouldStopService) return;
+        boolean shouldStopService = isShouldStopService(intent, flags, startId);
+        if (shouldStopService) return;
         //若还没有取消订阅，说明任务仍在运行，为防止重复启动，直接 return
-        Boolean workRunning = isWorkRunning(intent, flags, startId);
-        if (workRunning != null && workRunning) return;
+        boolean workRunning = isTaskRunning(intent, flags, startId);
+        if (workRunning) return;
         //业务逻辑
         startWork(intent, flags, startId);
     }
