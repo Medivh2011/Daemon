@@ -5,9 +5,16 @@
 
 ### 1. 添加二进制
 
-build.gradle 中添加
-
-
+project build.gradle 中添加
+	allprojects {
+		repositories {
+			maven { url 'https://jitpack.io' }
+		}
+	}
+	app build.gradle 中添加
+		dependencies {
+    	        compile 'com.github.Medivh2011:Daemon:1.0'
+    	}
 ### 2. 继承 AbsWorkService, 实现 6 个抽象方法
 
 ```
