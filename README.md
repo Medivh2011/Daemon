@@ -13,7 +13,7 @@ project build.gradle 中添加
 		}
 	}
 app build.gradle 中添加
-		dependencies {
+    dependencies {
     	        compile 'com.github.Medivh2011:Daemon:1.0'
     	}
  ```
@@ -47,9 +47,11 @@ void onServiceKilled();
 在 Application 的 `onCreate()` 中, 调用
 
 ```
+```
 Daemon.initialize(
   Context app,  //Application Context.
   Class<? extends AbsWorkService> serviceClass, //刚才创建的 Service 对应的 Class 对象.
   @Nullable Integer wakeUpInterval);  //定时唤醒的时间间隔(ms), 默认 6 分钟.
 
 Context.startService(new Intent(Context app, Class<? extends AbsWorkService> serviceClass));
+```
