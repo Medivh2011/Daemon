@@ -14,7 +14,7 @@ project build.gradle 中添加
 	}
 app build.gradle 中添加
     dependencies {
-    	        compile 'com.github.Medivh2011:Daemon:1.0'
+    	        compile 'com.github.Medivh2011:Daemon:1.1'
     	}
  ```
 ### 2. 继承 AbsWorkService, 实现 6 个抽象方法
