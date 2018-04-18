@@ -1,4 +1,4 @@
-package com.medivh.damon;
+package com.medivh.daemon;
 
 import android.app.*;
 import android.content.*;
@@ -6,6 +6,9 @@ import android.content.pm.*;
 import android.os.*;
 import android.support.annotation.*;
 
+/**
+ * @author medivh
+ */
 public abstract class AbsWorkService extends Service {
 
     protected static final int HASH_CODE = 1;

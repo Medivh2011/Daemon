@@ -1,7 +1,10 @@
-package com.medivh.damon;
+package com.medivh.daemon;
 
 import android.content.*;
 
+/**
+ * @author medivh
+ */
 public class WakeUpReceiver extends BroadcastReceiver {
 
     /**

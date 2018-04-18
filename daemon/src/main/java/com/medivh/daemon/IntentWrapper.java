@@ -1,4 +1,4 @@
-package com.medivh.damon;
+package com.medivh.daemon;
 
 import android.app.*;
 import android.content.*;
@@ -10,6 +10,9 @@ import android.support.annotation.NonNull;
 
 import java.util.*;
 
+/**
+ * @author medivh
+ */
 public class IntentWrapper {
 
     //Android 7.0+ Doze 模式
@@ -58,7 +61,9 @@ public class IntentWrapper {
     public static List<IntentWrapper> getIntentWrapperList() {
         if (sIntentWrapperList == null) {
 
-            if (!Daemon.sInitialized) return new ArrayList<>();
+            if (!Daemon.sInitialized) {
+                return new ArrayList<>();
+            }
             
             sIntentWrapperList = new ArrayList<>();
             
@@ -98,7 +103,9 @@ public class IntentWrapper {
 
             //三星 5.0/5.1 自启动应用程序管理
             Intent samsungLIntent = Daemon.sApp.getPackageManager().getLaunchIntentForPackage("com.samsung.android.sm");
-            if (samsungLIntent != null) sIntentWrapperList.add(new IntentWrapper(samsungLIntent, SAMSUNG_L));
+            if (samsungLIntent != null) {
+                sIntentWrapperList.add(new IntentWrapper(samsungLIntent, SAMSUNG_L));
+            }
 
             //三星 6.0+ 未监视的应用程序管理
             Intent samsungMIntent = new Intent();
@@ -178,7 +185,9 @@ public class IntentWrapper {
 
     public static String getApplicationName() {
         if (sApplicationName == null) {
-            if (!Daemon.sInitialized) return "";
+            if (!Daemon.sInitialized) {
+                return "";
+            }
             PackageManager pm;
             ApplicationInfo ai;
             try {
@@ -200,22 +209,29 @@ public class IntentWrapper {
     @NonNull
     public static List<IntentWrapper> whiteListMatters(final Activity a, String reason) {
         List<IntentWrapper> showed = new ArrayList<>();
-        if (reason == null) reason = "核心服务的持续运行";
+        if (reason == null) {
+            reason = "核心服务的持续运行";
+        }
         List<IntentWrapper> intentWrapperList = getIntentWrapperList();
         for (final IntentWrapper iw : intentWrapperList) {
             //如果本机上没有能处理这个Intent的Activity，说明不是对应的机型，直接忽略进入下一次循环。
-            if (!iw.doesActivityExists()) continue;
+            if (!iw.doesActivityExists()) {
+                continue;
+            }
             switch (iw.type) {
                 case DOZE:
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         PowerManager pm = (PowerManager) a.getSystemService(Context.POWER_SERVICE);
-                        if (pm.isIgnoringBatteryOptimizations(a.getPackageName())) break;
+                        if (pm.isIgnoringBatteryOptimizations(a.getPackageName())){
+                            break;
+                        }
                         new AlertDialog.Builder(a)
                                 .setCancelable(false)
                                 .setTitle("需要忽略 " + getApplicationName() + " 的电池优化")
                                 .setMessage(reason + "需要 " + getApplicationName() + " 加入到电池优化的忽略名单。\n\n" +
                                         "请点击『确定』，在弹出的『忽略电池优化』对话框中，选择『是』。")
                                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
                                     public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                                 })
                                 .show();
@@ -229,6 +245,7 @@ public class IntentWrapper {
                             .setMessage(reason + "需要允许 " + getApplicationName() + " 的自动启动。\n\n" +
                                     "请点击『确定』，在弹出的『自启管理』中，将 " + getApplicationName() + " 对应的开关打开。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
@@ -242,22 +259,24 @@ public class IntentWrapper {
                             .setMessage(reason + "需要 " + getApplicationName() + " 加入到锁屏清理白名单。\n\n" +
                                     "请点击『确定』，在弹出的『锁屏清理』列表中，将 " + getApplicationName() + " 对应的开关打开。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
                     showed.add(iw);
                     break;
                 case XIAOMI_GOD:
-                    new AlertDialog.Builder(a)
-                            .setCancelable(false)
-                            .setTitle("需要关闭 " + getApplicationName() + " 的神隐模式")
-                            .setMessage(reason + "需要关闭 " + getApplicationName() + " 的神隐模式。\n\n" +
-                                    "请点击『确定』，在弹出的 " + getApplicationName() + " 神隐模式设置中，选择『无限制』，然后选择『允许定位』。")
-                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
-                            })
-                            .show();
-                    showed.add(iw);
+//                    new AlertDialog.Builder(a)
+//                            .setCancelable(false)
+//                            .setTitle("需要更改 " + getApplicationName() + " 的后台配置")
+//                            .setMessage(reason + "需要更改 " + getApplicationName() + " 的后台配置。\n\n" +
+//                                    "请点击『确定』，在弹出的 " + getApplicationName() + "后台配置中，选择『无限制』。")
+//                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
+//                            })
+//                            .show();
+//                    showed.add(iw);
                     break;
                 case SAMSUNG_L:
                     new AlertDialog.Builder(a)
@@ -266,6 +285,7 @@ public class IntentWrapper {
                             .setMessage(reason + "需要 " + getApplicationName() + " 在屏幕关闭时继续运行。\n\n" +
                                     "请点击『确定』，在弹出的『智能管理器』中，点击『内存』，选择『自启动应用程序』选项卡，将 " + getApplicationName() + " 对应的开关打开。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
@@ -278,6 +298,7 @@ public class IntentWrapper {
                             .setMessage(reason + "需要 " + getApplicationName() + " 在屏幕关闭时继续运行。\n\n" +
                                     "请点击『确定』，在弹出的『电池』页面中，点击『未监视的应用程序』->『添加应用程序』，勾选 " + getApplicationName() + "，然后点击『完成』。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
@@ -290,6 +311,7 @@ public class IntentWrapper {
                             .setMessage(reason + "需要允许 " + getApplicationName() + " 保持后台运行。\n\n" +
                                     "请点击『确定』，在弹出的应用信息界面中，将『后台管理』选项更改为『保持后台运行』。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
@@ -302,6 +324,7 @@ public class IntentWrapper {
                             .setMessage(reason + "需要 " + getApplicationName() + " 在待机时保持运行。\n\n" +
                                     "请点击『确定』，在弹出的『待机耗电管理』中，将 " + getApplicationName() + " 对应的开关打开。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
@@ -318,6 +341,7 @@ public class IntentWrapper {
                             .setMessage(reason + "需要 " + getApplicationName() + " 加入到自启动白名单。\n\n" +
                                     "请点击『确定』，在弹出的『自启动管理』中，将 " + getApplicationName() + " 对应的开关打开。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
@@ -330,6 +354,7 @@ public class IntentWrapper {
                             .setMessage(reason + "需要允许 " + getApplicationName() + " 的自启动。\n\n" +
                                     "请点击『确定』，在弹出的『酷管家』中，找到『软件管理』->『自启动管理』，取消勾选 " + getApplicationName() + "，将 " + getApplicationName() + " 的状态改为『已允许』。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
@@ -342,6 +367,7 @@ public class IntentWrapper {
                             .setMessage(reason + "需要允许 " + getApplicationName() + " 在后台高耗电时运行。\n\n" +
                                     "请点击『确定』，在弹出的『后台高耗电』中，将 " + getApplicationName() + " 对应的开关打开。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
@@ -354,6 +380,7 @@ public class IntentWrapper {
                             .setMessage(reason + "需要允许 " + getApplicationName() + " 的自启动和后台运行。\n\n" +
                                     "请点击『确定』，在弹出的『系统管家』中，分别找到『应用管理』->『应用自启』和『绿色后台』->『清理白名单』，将 " + getApplicationName() + " 添加到白名单。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
@@ -366,6 +393,7 @@ public class IntentWrapper {
                             .setMessage(reason + "需要禁止 " + getApplicationName() + " 被自动清理。\n\n" +
                                     "请点击『确定』，在弹出的『应用保护』中，将 " + getApplicationName() + " 对应的开关关闭。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
@@ -378,6 +406,7 @@ public class IntentWrapper {
                             .setMessage(reason + "需要允许 " + getApplicationName() + " 的后台自启、后台 GPS 和后台运行。\n\n" +
                                     "请点击『确定』，在弹出的『后台管理』中，分别找到『后台自启』、『后台 GPS』和『后台运行』，将 " + getApplicationName() + " 对应的开关打开。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
@@ -390,11 +419,13 @@ public class IntentWrapper {
                             .setMessage(reason + "需要关闭 " + getApplicationName() + " 的后台耗电优化。\n\n" +
                                     "请点击『确定』，在弹出的『后台耗电优化』中，将 " + getApplicationName() + " 对应的开关关闭。")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
                                 public void onClick(DialogInterface d, int w) {iw.startActivitySafely(a);}
                             })
                             .show();
                     showed.add(iw);
                     break;
+                default:
             }
         }
         return showed;
@@ -421,7 +452,9 @@ public class IntentWrapper {
      * 判断本机上是否有能处理当前Intent的Activity
      */
     protected boolean doesActivityExists() {
-        if (!Daemon.sInitialized) return false;
+        if (!Daemon.sInitialized) {
+            return false;
+        }
         PackageManager pm = Daemon.sApp.getPackageManager();
         List<ResolveInfo> list = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         return list != null && list.size() > 0;

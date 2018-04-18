@@ -1,4 +1,4 @@
-package com.medivh.damon;
+package com.medivh.daemon;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -18,6 +18,9 @@ import io.reactivex.*;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
+/**
+ * @author medivh
+ */
 public class WatchDogService extends Service {
 
     protected static final int HASH_CODE = 2;
@@ -30,14 +33,20 @@ public class WatchDogService extends Service {
      */
     protected final int onStart(Intent intent, int flags, int startId) {
 
-        if (!Daemon.sInitialized) return START_STICKY;
+        if (!Daemon.sInitialized) {
+            return START_STICKY;
+        }
 
-        if (sDisposable != null && !sDisposable.isDisposed()) return START_STICKY;
+        if (sDisposable != null && !sDisposable.isDisposed()) {
+            return START_STICKY;
+        }
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
             startForeground(HASH_CODE, new Notification());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+            {
                 Daemon.startServiceSafely(new Intent(Daemon.sApp, WatchDogNotificationService.class));
+            }
         }
 
         //定时检查 AbsWorkService 是否在运行，如果不在运行就把它拉起来
@@ -46,7 +55,9 @@ public class WatchDogService extends Service {
             JobInfo.Builder builder = new JobInfo.Builder(HASH_CODE, new ComponentName(Daemon.sApp, JobSchedulerService.class));
             builder.setPeriodic(Daemon.getWakeUpInterval());
             //Android 7.0+ 增加了一项针对 JobScheduler 的新限制，最小间隔只能是下面设定的数字
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) builder.setPeriodic(JobInfo.getMinPeriodMillis(), JobInfo.getMinFlexMillis());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                builder.setPeriodic(JobInfo.getMinPeriodMillis(), JobInfo.getMinFlexMillis());
+            }
             builder.setPersisted(true);
             JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
             scheduler.schedule(builder.build());
@@ -92,7 +103,9 @@ public class WatchDogService extends Service {
     }
 
     protected void onEnd(Intent rootIntent) {
-        if (!Daemon.sInitialized) return;
+        if (!Daemon.sInitialized) {
+            return;
+        }
         Daemon.startServiceMayBind(Daemon.sServiceClass);
         Daemon.startServiceMayBind(WatchDogService.class);
     }
@@ -120,7 +133,9 @@ public class WatchDogService extends Service {
      * 而是向 WakeUpReceiver 发送一个 Action 为 WakeUpReceiver.ACTION_CANCEL_JOB_ALARM_SUB 的广播.
      */
     public static void cancelJobAlarmSub() {
-        if (!Daemon.sInitialized) return;
+        if (!Daemon.sInitialized) {
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             JobScheduler scheduler = (JobScheduler) Daemon.sApp.getSystemService(JOB_SCHEDULER_SERVICE);
             scheduler.cancel(HASH_CODE);
@@ -128,7 +143,9 @@ public class WatchDogService extends Service {
             AlarmManager am = (AlarmManager) Daemon.sApp.getSystemService(ALARM_SERVICE);
             if (sPendingIntent != null) am.cancel(sPendingIntent);
         }
-        if (sDisposable != null) sDisposable.dispose();
+        if (sDisposable != null) {
+            sDisposable.dispose();
+        }
     }
 
     public static class WatchDogNotificationService extends Service {

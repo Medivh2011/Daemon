@@ -5,8 +5,6 @@ import android.os.*;
 import android.util.Log;
 
 
-import com.medivh.damon.AbsWorkService;
-
 import java.util.concurrent.*;
 
 import io.reactivex.*;

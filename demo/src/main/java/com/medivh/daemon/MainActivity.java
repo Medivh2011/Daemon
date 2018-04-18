@@ -4,9 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.medivh.damon.Daemon;
-import com.medivh.damon.IntentWrapper;
-
 public class MainActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle b) {

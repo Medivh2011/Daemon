@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Daemon.iml" filepath="$PROJECT_DIR$/Daemon.iml" />
-      <module fileurl="file://$PROJECT_DIR$/damon/damon.iml" filepath="$PROJECT_DIR$/damon/damon.iml" />
-      <module fileurl="file://$PROJECT_DIR$/demo/app.iml" filepath="$PROJECT_DIR$/demo/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/daemon/daemon.iml" filepath="$PROJECT_DIR$/daemon/daemon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
     </modules>
   </component>
 </project>

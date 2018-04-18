@@ -2,8 +2,6 @@ package com.medivh.daemon;
 
 import android.app.Application;
 
-import com.medivh.damon.Daemon;
-
 /**
  * Created by Medivh on 2018/3/23.
  */

@@ -1,4 +1,4 @@
-package com.medivh.damon;
+package com.medivh.daemon;
 
 import android.app.*;
 import android.content.*;
